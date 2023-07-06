@@ -1,6 +1,6 @@
 import { ChangeEvent, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { addNote, updateNote, deleteNote } from "./todoSlice";
+import { addNote } from "./todoSlice";
 
 import { MdAdd, MdOutlineClose } from "react-icons/md";
 
