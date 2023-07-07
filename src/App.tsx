@@ -32,19 +32,30 @@ function App() {
   const [note, setNote] = useState<Note>(initialNote);
 
   const menuRef = useRef<HTMLDivElement>(null);
-  const ref = useRef<HTMLTextAreaElement>(null);
+  const ref = useRef<HTMLTextAreaElement | null>(null);
   const ref1 = useRef<HTMLTextAreaElement>(null);
 
   const handleInput = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     if (ref.current) {
       ref.current.style.height = "auto";
-      ref.current.style.height = `${e.target.scrollHeight - 16}px`;
+      ref.current.style.height = `${e.target.scrollHeight}px`;
     }
   };
   const handleInput1 = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    console.log(ref.current, e.target.scrollHeight);
     if (ref1.current) {
       ref1.current.style.height = "auto";
-      ref1.current.style.height = `${e.target.scrollHeight - 16}px`;
+      ref1.current.style.height = `${e.target.scrollHeight}px`;
+    }
+  };
+  const handleOnBlur = (): void => {
+    if (ref.current) {
+      ref.current.style.height = "auto";
+    }
+  };
+  const handleOnBlur1 = (): void => {
+    if (ref1.current) {
+      ref1.current.style.height = "auto";
     }
   };
   useEffect(() => {
@@ -71,6 +82,7 @@ function App() {
   };
   const handleCloseNote = (): void => {
     setNoteFocus(false);
+    handleOnBlur();
     setNote({
       id: generateID(),
       title: "",
