@@ -4,6 +4,7 @@ import { addNote, deleteNote, updateNote } from "./todoSlice";
 
 import { MdAdd, MdEdit } from "react-icons/md";
 import Modal from "./components/Modal";
+import Header from "./components/Header";
 
 function App() {
   const Notes = useAppSelector((state) => state.toDo);
@@ -26,8 +27,8 @@ function App() {
   };
 
   const [noteFocus, setNoteFocus] = useState<boolean>(false);
-  const [updateNoteId, setUpdateNoteId] = useState<number | null >(null)
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [updateNoteId, setUpdateNoteId] = useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [note, setNote] = useState<Note>(initialNote);
 
   const menuRef = useRef<HTMLDivElement>(null);
@@ -60,7 +61,6 @@ function App() {
     };
   });
 
-
   const handleAddNote = () => {
     dispatch(addNote(note));
     handleCloseNote();
@@ -78,10 +78,7 @@ function App() {
     });
   };
 
-
-
   const handleModalOpen = (id: number, title: string, note: string): void => {
-
     setUpdateNoteId(id);
     setNote({
       id,
@@ -93,7 +90,7 @@ function App() {
 
   const handleModalClose = () => {
     setIsModalOpen(false);
-    setUpdateNoteId(null)
+    setUpdateNoteId(null);
     setNote({
       id: generateID(),
       title: "",
@@ -102,12 +99,12 @@ function App() {
   };
 
   const onDeleteUserClicked = () => {
-    dispatch(deleteNote({id:note.id}))
-    handleModalClose()
+    dispatch(deleteNote({ id: note.id }));
+    handleModalClose();
   };
   const onUpdateNote = () => {
-    dispatch(updateNote(note))
-    handleModalClose()
+    dispatch(updateNote(note));
+    handleModalClose();
   };
 
   const renderCardTask = (): JSX.Element[] =>
@@ -118,7 +115,7 @@ function App() {
         onClick={() => handleModalOpen(note.id, note.title, note.note)}
       >
         <div className="text-left">
-          <h1 className="text-xl font-semibold mb-2 text-gray-900 whitespace-pre-wrap break-words">
+          <h1 className="text-lg font-medium mb-2 text-gray-900 whitespace-pre-wrap break-words">
             {note.title}
           </h1>
           <p className="text-md text-gray-800 mb-2 whitespace-pre-wrap break-words">
@@ -131,22 +128,47 @@ function App() {
       </div>
     ));
 
+  const noteFocusClass = !noteFocus ? `font-semibold text-lg` : "";
+
   return (
     <>
-      <div className="relative flex flex-col justify-center gap-2 items-center text-white pt-10">
-        <h1 className="text-3xl font-bold text-gray-600">{"notes"}</h1>
-       
+      <Modal
+        isOpen={isModalOpen}
+        onClose={handleModalClose}
+        onDelete={onDeleteUserClicked}
+        onUpdate={onUpdateNote}
+      >
+        <div className="bg-white p-4">
+          <input
+            className="text-gray-900 p-3 font-medium w-full focus:outline-none"
+            type="text"
+            placeholder="Title"
+            onChange={(e) => setNote({ ...note, title: e.target.value })}
+            value={note.title}
+          />
+          <textarea
+            ref={ref1}
+            onInput={handleInput1}
+            className="text-gray-600 p-3 resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
+            placeholder="Take a note..."
+            value={note.note}
+            onChange={(e) => setNote({ ...note, note: e.target.value })}
+          ></textarea>
+        </div>
+      </Modal>
+      <div className="relative flex flex-col justify-center gap-5 items-center text-white pt-10">
+        <Header />
         <div
-          className="relative w-full max-w-[600px] m-auto z-10 rounded-lg shadow-lg mb-10 bg-white"
+          className="relative w-full max-w-[600px] m-auto z-10 rounded-lg p-2 shadow-lg mb-10 bg-white"
           ref={menuRef}
         >
           {noteFocus ? (
             <input
               onChange={(e) => setNote({ ...note, title: e.target.value })}
-              className="text-gray-900 p-3 rounded-lg w-full focus:outline-none"
+              className="text-gray-900 font-medium p-3 w-full focus:outline-none"
               type="text"
               placeholder="Title"
-              value={!updateNoteId ? note.title : ''}
+              value={!updateNoteId ? note.title : ""}
             />
           ) : null}
           <textarea
@@ -155,9 +177,9 @@ function App() {
             onChange={(e) => setNote({ ...note, note: e.target.value })}
             onInput={handleInput}
             onFocus={handleOnFocus}
-            className="text-gray-600 p-3 rounded-lg resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
+            className={`text-gray-600 ${noteFocusClass} p-3 resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none`}
             placeholder="Take a note..."
-            value={!updateNoteId ? note.note : ''}
+            value={!updateNoteId ? note.note : ""}
           ></textarea>
 
           {noteFocus ? (
@@ -165,6 +187,7 @@ function App() {
               <button
                 onClick={handleAddNote}
                 className="rounded-full bg-yellow-500 p-2 border-2 shadow-lg hover:bg-yellow-600 text-xl"
+                title="Edit"
               >
                 <MdAdd />
               </button>
@@ -172,33 +195,9 @@ function App() {
           ) : null}
         </div>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:grid-cols-4 lg:gap-8 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4 ">
         {renderCardTask()}
       </div>
-      <Modal
-          isOpen={isModalOpen}
-          onClose={handleModalClose}
-          onDelete={onDeleteUserClicked}
-          onUpdate={onUpdateNote}
-        >
-          <div className="bg-white p-4">
-            <input
-              className="text-gray-900 p-3  w-full focus:outline-none"
-              type="text"
-              placeholder="Title"
-              onChange={(e) => setNote({ ...note, title: e.target.value })}
-              value={note.title}
-            />
-            <textarea
-              ref={ref1}
-              onInput={handleInput1}
-              className="text-gray-600 p-3 resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
-              placeholder="Take a note..."
-              value={note.note}
-              onChange={(e) => setNote({ ...note, note: e.target.value })}
-            ></textarea>
-          </div>
-        </Modal>
     </>
   );
 }

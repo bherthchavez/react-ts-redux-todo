@@ -33,14 +33,16 @@ function Modal({ isOpen, onClose, onUpdate, onDelete, children }: ModalProps) {
           <div className="p-2 flex justify-between">
             <button
               type="button"
-              className="flex justify-center p-2 text-slate-700 border  border-slate-300   hover:bg-gray-200 rounded-md duration-150"
+              className="flex justify-center p-2 text-slate-700 border  border-slate-200   hover:bg-gray-200 rounded-md duration-150"
               onClick={onDelete}
+              title="Delete"
             >
               <MdDelete size={20} />
             </button>
             <button
               type="button"
               className="h-9 flex justify-center items-center rounded-md border border-transparent shadow-sm px-3 sm:px-4 py-1 bg-gray-500 text-base text-white hover:bg-gray-700"
+              title="Update"
               onClick={onUpdate}
             >
               Done
