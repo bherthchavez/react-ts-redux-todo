@@ -10,7 +10,6 @@ const Header = () => {
   return (
     <>
       <div className="flex mt-0 justify-center items-center ">
-        {/* <h1 className=" text-gray-600 pr-3">Build with:</h1> */}
         <span className="w-7 h-7">
           <img src={Vite} alt="Vite icon" />
         </span>
