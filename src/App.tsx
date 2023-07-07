@@ -153,6 +153,7 @@ function App() {
           <textarea
             ref={ref1}
             onInput={handleInput1}
+            rows={7}
             className="text-gray-600 p-3 resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
             placeholder="Take a note..."
             value={note.note}
