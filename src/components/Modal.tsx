@@ -17,7 +17,7 @@ function Modal({ isOpen, onClose, onUpdate, onDelete, children }: ModalProps) {
       <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center  ">
         <div className="fixed inset-0 transition-opacity">
           <div
-            className="absolute inset-0 bg-gray-400  opacity-80"
+            className="absolute inset-0 backdrop-blur-sm bg-gray-200/30  "
             onClick={onClose}
           ></div>
         </div>
