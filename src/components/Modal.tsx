@@ -41,11 +41,11 @@ function Modal({ isOpen, onClose, onUpdate, onDelete, children }: ModalProps) {
             </button>
             <button
               type="button"
-              className="h-9 flex justify-center items-center rounded-md border border-transparent shadow-sm px-3 sm:px-4 py-1 bg-gray-500 text-base text-white hover:bg-gray-700"
+              className="h-9 flex justify-center items-center rounded-md border border-transparent shadow-sm px-3 sm:px-4 py-1 bg-gray-200 font-medium hover:bg-gray-300"
               title="Update"
               onClick={onUpdate}
             >
-              Done
+              Update
             </button>
           </div>
         </div>

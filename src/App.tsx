@@ -92,7 +92,7 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleModalClose = () => {
+  const handleModalClose = ():void => {
     setIsModalOpen(false);
     setUpdateNoteId(null);
     setNote({
@@ -102,11 +102,11 @@ function App() {
     });
   };
 
-  const onDeleteUserClicked = () => {
+  const onDeleteUserClicked = ():void => {
     dispatch(deleteNote({ id: note.id }));
     handleModalClose();
   };
-  const onUpdateNote = () => {
+  const onUpdateNote = ():void => {
     dispatch(updateNote(note));
     handleModalClose();
   };
@@ -192,7 +192,7 @@ function App() {
               <button
                 onClick={handleAddNote}
                 className="rounded-full bg-yellow-500 p-2 border-2 shadow-lg hover:bg-yellow-600 text-xl"
-                title="Edit"
+                title="Add"
               >
                 <MdAdd />
               </button>
