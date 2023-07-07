@@ -1,8 +1,9 @@
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { addNote } from "./todoSlice";
+import { addNote, deleteNote, updateNote } from "./todoSlice";
 
-import { MdAdd, MdOutlineClose } from "react-icons/md";
+import { MdAdd, MdEdit } from "react-icons/md";
+import Modal from "./components/Modal";
 
 function App() {
   const Notes = useAppSelector((state) => state.toDo);
@@ -12,51 +13,109 @@ function App() {
     return Math.floor(Math.random() * 10000000);
   };
 
-  const [noteFocus, setNoteFocus] = useState<boolean>(false);
-  const [noteTitleFocus, setNoteTitleFocus] = useState<boolean>(false);
-  const [note, setNote] = useState({
+  interface Note {
+    id: number;
+    title: string;
+    note: string;
+  }
+
+  const initialNote: Note = {
     id: generateID(),
     title: "",
     note: "",
-  });
+  };
 
+  const [noteFocus, setNoteFocus] = useState<boolean>(false);
+  const [updateNoteId, setUpdateNoteId] = useState<number | null >(null)
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
+  const [note, setNote] = useState<Note>(initialNote);
+
+  const menuRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLTextAreaElement>(null);
+  const ref1 = useRef<HTMLTextAreaElement>(null);
 
-  const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInput = (e: ChangeEvent<HTMLTextAreaElement>): void => {
     if (ref.current) {
       ref.current.style.height = "auto";
       ref.current.style.height = `${e.target.scrollHeight - 16}px`;
     }
   };
+  const handleInput1 = (e: ChangeEvent<HTMLTextAreaElement>): void => {
+    if (ref1.current) {
+      ref1.current.style.height = "auto";
+      ref1.current.style.height = `${e.target.scrollHeight - 16}px`;
+    }
+  };
+  useEffect(() => {
+    const handle = (e: MouseEvent): void => {
+      if (!menuRef.current?.contains(e.target as Node) && !updateNoteId) {
+        setNoteFocus(false);
+        handleCloseNote();
+      }
+    };
+    document.addEventListener("mousedown", handle);
 
-const handleAddNote = ()=>{
-    dispatch(addNote(note))
-    handleCloseNote()
-}
-  
+    return () => {
+      document.removeEventListener("mousedown", handle);
+    };
+  });
+
+
+  const handleAddNote = () => {
+    dispatch(addNote(note));
+    handleCloseNote();
+  };
+
   const handleOnFocus = (): void => {
     setNoteFocus(true);
-    setNoteTitleFocus(true);
   };
   const handleCloseNote = (): void => {
-    setNoteFocus((prev) => !prev);
-    setNoteTitleFocus((prev) => !prev);
+    setNoteFocus(false);
     setNote({
       id: generateID(),
       title: "",
       note: "",
-    })
+    });
   };
-  const handleInputOnFocus = (): void => {
-    setNoteTitleFocus(true);
+
+
+
+  const handleModalOpen = (id: number, title: string, note: string): void => {
+
+    setUpdateNoteId(id);
+    setNote({
+      id,
+      title,
+      note,
+    });
+    setIsModalOpen(true);
   };
-  
+
+  const handleModalClose = () => {
+    setIsModalOpen(false);
+    setUpdateNoteId(null)
+    setNote({
+      id: generateID(),
+      title: "",
+      note: "",
+    });
+  };
+
+  const onDeleteUserClicked = () => {
+    dispatch(deleteNote({id:note.id}))
+    handleModalClose()
+  };
+  const onUpdateNote = () => {
+    dispatch(updateNote(note))
+    handleModalClose()
+  };
 
   const renderCardTask = (): JSX.Element[] =>
     Notes.map((note) => (
       <div
         key={note.id}
-        className="rounded-md p-3 w-60  m-3 border-2 hover:shadow-lg bg-white"
+        className="group relative rounded-md p-3 w-60  m-3 border-2 hover:shadow-lg bg-white cursor-pointer"
+        onClick={() => handleModalOpen(note.id, note.title, note.note)}
       >
         <div className="text-left">
           <h1 className="text-xl font-semibold mb-2 text-gray-900 whitespace-pre-wrap break-words">
@@ -66,6 +125,9 @@ const handleAddNote = ()=>{
             {note.note}
           </p>
         </div>
+        <button className="hidden group-hover:block absolute top-0 right-0 p-2 text-lg text-gray-500 ">
+          <MdEdit />
+        </button>
       </div>
     ));
 
@@ -73,16 +135,18 @@ const handleAddNote = ()=>{
     <>
       <div className="relative flex flex-col justify-center gap-2 items-center text-white pt-10">
         <h1 className="text-3xl font-bold text-gray-600">{"notes"}</h1>
-
-        <div className="relative w-full max-w-[600px] m-auto z-10 rounded-lg shadow-lg mb-10 bg-white">
-          {noteFocus || noteTitleFocus ? (
+       
+        <div
+          className="relative w-full max-w-[600px] m-auto z-10 rounded-lg shadow-lg mb-10 bg-white"
+          ref={menuRef}
+        >
+          {noteFocus ? (
             <input
               onChange={(e) => setNote({ ...note, title: e.target.value })}
-              onFocus={handleInputOnFocus}
               className="text-gray-900 p-3 rounded-lg w-full focus:outline-none"
               type="text"
               placeholder="Title"
-              value={note.title}
+              value={!updateNoteId ? note.title : ''}
             />
           ) : null}
           <textarea
@@ -93,20 +157,16 @@ const handleAddNote = ()=>{
             onFocus={handleOnFocus}
             className="text-gray-600 p-3 rounded-lg resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
             placeholder="Take a note..."
-            value={note.note}
+            value={!updateNoteId ? note.note : ''}
           ></textarea>
 
-          {noteFocus || noteTitleFocus ? (
-            <div className="p-1 absolute bottom-[-20px] flex gap-2 right-0">
+          {noteFocus ? (
+            <div className="p-1 absolute bottom-[-25px] flex gap-2 right-5">
               <button
-                onClick={handleAddNote} 
-                className="rounded-full bg-yellow-500 p-2 border-2 shadow-lg hover:bg-yellow-600">
+                onClick={handleAddNote}
+                className="rounded-full bg-yellow-500 p-2 border-2 shadow-lg hover:bg-yellow-600 text-xl"
+              >
                 <MdAdd />
-              </button>
-              <button
-                onClick={handleCloseNote} 
-                className="rounded-full bg-red-500 p-2 border-2  shadow-sm hover:bg-red-700">
-                <MdOutlineClose/>
               </button>
             </div>
           ) : null}
@@ -115,6 +175,30 @@ const handleAddNote = ()=>{
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 lg:grid-cols-4 lg:gap-8 ">
         {renderCardTask()}
       </div>
+      <Modal
+          isOpen={isModalOpen}
+          onClose={handleModalClose}
+          onDelete={onDeleteUserClicked}
+          onUpdate={onUpdateNote}
+        >
+          <div className="bg-white p-4">
+            <input
+              className="text-gray-900 p-3  w-full focus:outline-none"
+              type="text"
+              placeholder="Title"
+              onChange={(e) => setNote({ ...note, title: e.target.value })}
+              value={note.title}
+            />
+            <textarea
+              ref={ref1}
+              onInput={handleInput1}
+              className="text-gray-600 p-3 resize-none min-h-[3em] max-h-[50vh] w-full  focus:outline-none"
+              placeholder="Take a note..."
+              value={note.note}
+              onChange={(e) => setNote({ ...note, note: e.target.value })}
+            ></textarea>
+          </div>
+        </Modal>
     </>
   );
 }

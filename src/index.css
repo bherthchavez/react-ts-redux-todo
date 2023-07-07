@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-  font-family: "Montserrat", sans-serif;
-}
 body {
   background: #eee;
   padding: 0 16px;
