@@ -52,12 +52,8 @@ function App() {
     if (ref.current) {
       ref.current.style.height = "auto";
     }
-  };
-  const handleOnBlur1 = (): void => {
-    if (ref1.current) {
-      ref1.current.style.height = "auto";
-    }
-  };
+  }
+  
   useEffect(() => {
     const handle = (e: MouseEvent): void => {
       if (!menuRef.current?.contains(e.target as Node) && !updateNoteId) {
