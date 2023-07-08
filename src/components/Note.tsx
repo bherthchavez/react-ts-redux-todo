@@ -1,14 +1,9 @@
 import { MdEdit } from 'react-icons/md';
-
-type Note = {
-  id: number;
-  title: string;
-  note: string;
-};
+import { KeepNote } from '../types/Notes';
 
 type CardNoteProps = {
-  Notes: Note[];
-  ModalOpen: (id: number, title: string, note: string) => void;
+  Notes: KeepNote[];
+  ModalOpen: (id: string, title: string, note: string) => void;
 };
 
 

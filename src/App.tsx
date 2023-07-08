@@ -1,35 +1,39 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
-import { addNote, deleteNote, updateNote } from "./todoSlice";
+import { addNote, deleteNote, fetchNotes, updateNote } from "./todoSlice";
 import { MdAdd } from "react-icons/md";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Note from "./components/Note";
 
+import { firestore } from "./firebase";
+import { KeepNote } from "./types/Notes";
+
 function App() {
-  const Notes = useAppSelector((state) => state.toDo);
+
   const dispatch = useAppDispatch();
 
-  const generateID = (): number => {
-    return Math.floor(Math.random() * 10000000);
-  };
+  useEffect(() => {
+    dispatch(fetchNotes());
+  });
 
-  interface Note {
-    id: number;
-    title: string;
-    note: string;
-  }
+  const {
+    notes: Notes
+  } = useAppSelector((state) => state.toDo);
 
-  const initialNote: Note = {
-    id: generateID(),
+  const initialNote: KeepNote = {
+    id: "",
     title: "",
     note: "",
   };
 
   const [noteFocus, setNoteFocus] = useState<boolean>(false);
-  const [updateNoteId, setUpdateNoteId] = useState<number | null>(null);
+  const [updateNoteId, setUpdateNoteId] = useState<number | null | string>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [note, setNote] = useState<Note>(initialNote);
+
+  const [note, setNote] = useState<KeepNote>(initialNote);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const ref = useRef<HTMLTextAreaElement>(null);
@@ -75,19 +79,20 @@ function App() {
       ref.current.style.height = "auto";
     }
     setNote({
-      id: generateID(),
+      id: "",
       title: "",
       note: "",
     });
   };
 
-  const handleModalOpen = (id: number, title: string, note: string): void => {
+  const handleModalOpen = (id: string, title: string, note: string): void => {
     setUpdateNoteId(id);
     setNote({
       id,
       title,
       note,
     });
+
     setIsModalOpen(true);
   };
 
@@ -95,7 +100,7 @@ function App() {
     setIsModalOpen(false);
     setUpdateNoteId(null);
     setNote({
-      id: generateID(),
+      id: "",
       title: "",
       note: "",
     });
@@ -106,6 +111,16 @@ function App() {
     handleModalClose();
   };
   const onUpdateNote = (): void => {
+    firestore
+      .collection("todos")
+      .doc(note.id)
+      .update({ title: note.title, note: note.note })
+      .then(() => {
+        console.log("updated notes");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
     dispatch(updateNote(note));
     handleModalClose();
   };
