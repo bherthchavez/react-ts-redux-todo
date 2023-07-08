@@ -1,10 +1,10 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useAppSelector, useAppDispatch } from "./app/hooks";
 import { addNote, deleteNote, updateNote } from "./todoSlice";
-
-import { MdAdd, MdEdit } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
+import Note from "./components/Note";
 
 function App() {
   const Notes = useAppSelector((state) => state.toDo);
@@ -46,7 +46,7 @@ function App() {
       ref1.current.style.height = "auto";
       ref1.current.style.height = `${e.target.scrollHeight}px`;
     }
-  }
+  };
 
   useEffect(() => {
     const handle = (e: MouseEvent): void => {
@@ -56,7 +56,6 @@ function App() {
       }
     };
     document.addEventListener("mousedown", handle);
-
     return () => {
       document.removeEventListener("mousedown", handle);
     };
@@ -92,7 +91,7 @@ function App() {
     setIsModalOpen(true);
   };
 
-  const handleModalClose = ():void => {
+  const handleModalClose = (): void => {
     setIsModalOpen(false);
     setUpdateNoteId(null);
     setNote({
@@ -102,35 +101,14 @@ function App() {
     });
   };
 
-  const onDeleteUserClicked = ():void => {
+  const onDeleteUserClicked = (): void => {
     dispatch(deleteNote({ id: note.id }));
     handleModalClose();
   };
-  const onUpdateNote = ():void => {
+  const onUpdateNote = (): void => {
     dispatch(updateNote(note));
     handleModalClose();
   };
-
-  const renderCardNote = (): JSX.Element[] =>
-    Notes.map((note) => (
-      <div
-        key={note.id}
-        className="group relative rounded-md p-3 w-60  m-3 border-2 hover:shadow-lg bg-white cursor-pointer"
-        onClick={() => handleModalOpen(note.id, note.title, note.note)}
-      >
-        <div className="text-left">
-          <h1 className="text-lg font-medium mb-2 text-gray-900 whitespace-pre-wrap break-words">
-            {note.title}
-          </h1>
-          <p className="text-md text-gray-800 mb-2 whitespace-pre-wrap break-words">
-            {note.note}
-          </p>
-        </div>
-        <button className="hidden group-hover:block absolute top-0 right-0 p-2 text-lg text-gray-500 ">
-          <MdEdit />
-        </button>
-      </div>
-    ));
 
   const noteFocusClass = !noteFocus ? `font-semibold text-lg` : "";
 
@@ -201,7 +179,7 @@ function App() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4 ">
-        {renderCardNote()}
+        <Note Notes={Notes} ModalOpen={handleModalOpen} />
       </div>
     </>
   );
