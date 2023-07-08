@@ -111,7 +111,7 @@ function App() {
     handleModalClose();
   };
 
-  const renderCardTask = (): JSX.Element[] =>
+  const renderCardNote = (): JSX.Element[] =>
     Notes.map((note) => (
       <div
         key={note.id}
@@ -201,7 +201,7 @@ function App() {
         </div>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4 ">
-        {renderCardTask()}
+        {renderCardNote()}
       </div>
     </>
   );
