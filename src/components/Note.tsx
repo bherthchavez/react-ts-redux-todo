@@ -1,4 +1,3 @@
-import React from 'react';
 import { MdEdit } from 'react-icons/md';
 
 type Note = {
@@ -13,7 +12,7 @@ type CardNoteProps = {
 };
 
 
-const CardNote: React.FC<CardNoteProps> = ({ Notes, ModalOpen }) => {
+const CardNote = ({ Notes, ModalOpen }: CardNoteProps):JSX.Element => {
   return (
     <>
       {Notes.map((note) => (
