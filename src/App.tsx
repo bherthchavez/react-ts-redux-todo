@@ -103,7 +103,7 @@ function App() {
       title: "",
       note: "",
     });
-    setTimeout(reFetched, 1000)
+    setTimeout(reFetched, 100)
   };
 
   const reFetched = ()=>{
