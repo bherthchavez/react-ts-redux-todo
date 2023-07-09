@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     dispatch(fetchNotes());
-  });
+  }, [dispatch]);
 
   const {
     notes: Notes
