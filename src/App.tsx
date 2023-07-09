@@ -157,7 +157,7 @@ function App() {
       <div className="relative flex flex-col justify-center gap-5 items-center text-white pt-10">
         <Header />
         <div
-          className="relative w-full max-w-[600px] m-auto z-10 rounded-lg p-2 shadow-lg mb-10 bg-white"
+          className="relative w-full max-w-[600px] m-auto z-10 rounded-lg p-2 shadow-md mb-10 bg-white"
           ref={menuRef}
         >
           {noteFocus ? (
