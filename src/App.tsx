@@ -13,13 +13,21 @@ function App() {
 
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(fetchNotes());
-  }, [dispatch]);
-
   const {
     notes: Notes
   } = useAppSelector((state) => state.toDo);
+
+  const [fetchNote, setFetchNote ] = useState<boolean>(false)
+
+  useEffect(() => {
+
+    fetchNote 
+    ? dispatch(fetchNotes())
+    : dispatch(fetchNotes())
+
+  }, [dispatch, fetchNote]);
+
+
 
   const initialNote: KeepNote = {
     id: "",
@@ -66,6 +74,7 @@ function App() {
   });
 
   const handleAddNote = () => {
+    setFetchNote(prev=>!prev)
     dispatch(addNote(note));
     handleCloseNote();
   };
@@ -104,6 +113,7 @@ function App() {
       title: "",
       note: "",
     });
+    setFetchNote(prev=>!prev)
   };
 
   const onDeleteUserClicked = (): void => {
@@ -123,6 +133,7 @@ function App() {
       });
     dispatch(updateNote(note));
     handleModalClose();
+   
   };
 
   const noteFocusClass = !noteFocus ? `font-semibold text-lg` : "";
