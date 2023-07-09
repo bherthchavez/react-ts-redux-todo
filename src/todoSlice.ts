@@ -41,21 +41,25 @@ export const toDoSlice = createSlice({
       
       firestore.collection('todos')
         .add({ title, note })
-        .then((docRef) => {
-          console.log(docRef.id, "Added new notes.")
-          // state.notes.push({ id: docRef.id, title, note });
+        .then(() => {
+          console.log( "Added new notes.")
         })
         .catch((error) => {
           console.log(error.message)
         });
     },
-    updateNote: (state, action) => {
+    updateNote: (_state, action) => {
       const { id, title, note } = action.payload;
-      const existingNote = state.notes.find((note) => note.id === id);
-      if (existingNote) {
-        existingNote.title = title;
-        existingNote.note = note;
-      }
+      firestore
+      .collection("todos")
+      .doc(id)
+      .update({ title, note })
+      .then(() => {
+        console.log("updated notes");
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
     },
     // Use the PayloadAction type to declare the contents of `action.payload`
     deleteNote: (_state, action) => {

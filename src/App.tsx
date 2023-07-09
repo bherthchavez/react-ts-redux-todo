@@ -5,29 +5,19 @@ import { MdAdd } from "react-icons/md";
 import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Note from "./components/Note";
-
-import { firestore } from "./firebase";
 import { KeepNote } from "./types/Notes";
 
 function App() {
-
   const dispatch = useAppDispatch();
 
-  const {
-    notes: Notes
-  } = useAppSelector((state) => state.toDo);
+  const { notes: Notes } = useAppSelector((state) => state.toDo);
 
-  const [fetchNote, setFetchNote ] = useState<boolean>(false)
+  const [fetchNote, setFetchNote] = useState<boolean>(false);
 
   useEffect(() => {
-
-    fetchNote 
-    ? dispatch(fetchNotes())
-    : dispatch(fetchNotes())
-
+    fetchNote ? console.log("Refetched!") : console.log("Refetched!") ;
+    dispatch(fetchNotes())
   }, [dispatch, fetchNote]);
-
-
 
   const initialNote: KeepNote = {
     id: "",
@@ -74,9 +64,9 @@ function App() {
   });
 
   const handleAddNote = () => {
-    setFetchNote(prev=>!prev)
     dispatch(addNote(note));
     handleCloseNote();
+    setTimeout(reFetched, 10)
   };
 
   const handleOnFocus = (): void => {
@@ -113,27 +103,20 @@ function App() {
       title: "",
       note: "",
     });
-    setFetchNote(prev=>!prev)
+    setTimeout(reFetched, 1000)
   };
+
+  const reFetched = ()=>{
+    setFetchNote((prev) => !prev)
+  }
 
   const onDeleteUserClicked = (): void => {
     dispatch(deleteNote({ id: note.id }));
     handleModalClose();
   };
   const onUpdateNote = (): void => {
-    firestore
-      .collection("todos")
-      .doc(note.id)
-      .update({ title: note.title, note: note.note })
-      .then(() => {
-        console.log("updated notes");
-      })
-      .catch((error) => {
-        console.log(error.message);
-      });
-    dispatch(updateNote(note));
+    dispatch(updateNote({id: note.id, title: note.title, note: note.note}));
     handleModalClose();
-   
   };
 
   const noteFocusClass = !noteFocus ? `font-semibold text-lg` : "";
