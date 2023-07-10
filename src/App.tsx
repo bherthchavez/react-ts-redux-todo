@@ -69,6 +69,15 @@ function App() {
     setTimeout(reFetched, 10)
   };
 
+  const onDeleteUserClicked = (): void => {
+    dispatch(deleteNote({ id: note.id }));
+    handleModalClose();
+  };
+  const onUpdateNote = (): void => {
+    dispatch(updateNote({id: note.id, title: note.title, note: note.note}));
+    handleModalClose();
+  };
+
   const handleOnFocus = (): void => {
     setNoteFocus(true);
   };
@@ -110,14 +119,7 @@ function App() {
     setFetchNote((prev) => !prev)
   }
 
-  const onDeleteUserClicked = (): void => {
-    dispatch(deleteNote({ id: note.id }));
-    handleModalClose();
-  };
-  const onUpdateNote = (): void => {
-    dispatch(updateNote({id: note.id, title: note.title, note: note.note}));
-    handleModalClose();
-  };
+  
 
   const noteFocusClass = !noteFocus ? `font-semibold text-lg` : "";
 

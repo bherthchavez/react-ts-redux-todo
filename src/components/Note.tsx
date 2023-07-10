@@ -13,7 +13,7 @@ const CardNote = ({ Notes, ModalOpen }: CardNoteProps):JSX.Element => {
       {Notes.map((note) => (
         <div
           key={note.id}
-          className="group relative rounded-md p-3 w-60  m-3 border-2 hover:shadow-lg bg-white cursor-pointer"
+          className="group relative rounded-md p-3 w-auto sm:w-60  m-3 border-2 hover:shadow-lg bg-white cursor-pointer"
           onClick={() => ModalOpen(note.id, note.title, note.note)}
         >
           <div className="text-left">
