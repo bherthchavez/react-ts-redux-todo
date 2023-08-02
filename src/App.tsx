@@ -6,6 +6,7 @@ import Modal from "./components/Modal";
 import Header from "./components/Header";
 import Note from "./components/Note";
 import { KeepNote } from "./types/Notes";
+import { Analytics } from '@vercel/analytics/react';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -192,6 +193,8 @@ function App() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 lg:grid-cols-4 xl:grid-cols-5 lg:gap-4 ">
         <Note Notes={Notes} ModalOpen={handleModalOpen} />
       </div>
+
+      <Analytics />
     </>
   );
 }
