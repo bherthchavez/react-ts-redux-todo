@@ -32,13 +32,12 @@ const initialState: InitialState = {
 };
 
 export const toDoSlice = createSlice({
-  name: "todo",
+  name: "todos",
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
     addNote: (_state, action) => {
       const { title, note } = action.payload;
-      
       firestore.collection('todos')
         .add({ title, note })
         .then(() => {
